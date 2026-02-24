@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>การพัฒนาสื่อเสมือนจริง 360° | วัดมหาพุทธาราม (วัดพระโต)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --gold-deep: #8B6914;
+    --gold-pale: #FDF3D0;
+    --crimson: #8B1A1A;
+    --dark-brown: #2C1810;
+    --warm-black: #1A1208;
+    --cream: #FFF8E7;
+    --bronze: #CD7F32;
+    --shadow-gold: rgba(201, 168, 76, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--warm-black);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ===== ORNAMENT PATTERN ===== */
+  .lotus-bg {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(201,168,76,0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.04'%3E%3Cpath d='M30 0 C30 0 35 15 30 30 C25 15 30 0 30 0Z M0 30 C0 30 15 25 30 30 C15 35 0 30 0 30Z M60 30 C60 30 45 35 30 30 C45 25 60 30 60 30Z M30 60 C30 60 25 45 30 30 C35 45 30 60 30 60Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ===== HEADER / HERO ===== */
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(170deg, #0D0900 0%, #1A1208 40%, #2C1810 100%);
+  }
+
+  .hero-ornament-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), var(--gold), var(--gold-light), transparent);
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 5 L50 30 L75 30 L55 48 L63 73 L40 57 L17 73 L25 48 L5 30 L30 30 Z' fill='%23C9A84C'/%3E%3C/svg%3E");
+    background-size: 80px 80px;
+  }
+
+  .flame-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(0deg, rgba(201,168,76,0.08) 0%, transparent 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeInUp 1.2s ease both;
+  }
+
+  .badge-virtual {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+    color: var(--warm-black);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 0.4rem 1.5rem;
+    border-radius: 30px;
+    margin-bottom: 1.5rem;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { box-shadow: 0 0 10px var(--shadow-gold); }
+    to { box-shadow: 0 0 30px var(--shadow-gold), 0 0 60px rgba(201,168,76,0.2); }
+  }
+
+  .hero-title-sub {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: var(--gold-light);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    background: linear-gradient(180deg, #FFF8D0 0%, var(--gold-light) 40%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    margin-bottom: 0.3rem;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.4));
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--gold-light);
+    margin-bottom: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem auto;
+    max-width: 400px;
+  }
+
+  .hero-divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+
+  .hero-divider-line.rev {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .hero-divider-lotus {
+    font-size: 1.5rem;
+    color: var(--gold);
+    animation: spin-slow 8s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .hero-desc {
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+    color: rgba(253,243,208,0.75);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.8;
+  }
+
+  .btn-360 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold), var(--gold-light));
+    color: var(--warm-black);
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+    position: relative;
+    overflow: hidden;
+    margin: 0.5rem;
+  }
+
+  .btn-360::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-360:hover::before { left: 100%; }
+  .btn-360:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.6);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+  }
+
+  .btn-outline:hover {
+    background: rgba(201,168,76,0.1);
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(201,168,76,0.5);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(26,18,8,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: all 0.3s;
+  }
+
+  .nav-logo {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(253,243,208,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .nav-links a:hover { color: var(--gold-light); }
+
+  /* ===== SECTION BASE ===== */
+  section {
+    padding: 5rem 2rem;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--gold-light);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .section-underline {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold-light), var(--gold-deep));
+    margin: 1rem auto;
+    border-radius: 2px;
+  }
+
+  /* ===== VIRTUAL TOUR SECTION ===== */
+  #virtual-tour {
+    background: linear-gradient(180deg, var(--warm-black) 0%, #0F0A04 100%);
+  }
+
+  .tour-frame-wrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(201,168,76,0.3);
+    box-shadow: 0 0 60px rgba(201,168,76,0.15), 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .tour-frame-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(201,168,76,0.08) 0%, transparent 15%, transparent 85%, rgba(201,168,76,0.08) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .tour-frame-header {
+    background: linear-gradient(135deg, #1A1208, #2C1810);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .tour-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tour-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #FF5F56; }
+  .dot-yellow { background: #FFBD2E; }
+  .dot-green { background: #27C93F; }
+
+  .tour-frame-title {
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    opacity: 0.8;
+  }
+
+  .tour-badge-360 {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+    color: var(--warm-black);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+  }
+
+  iframe.tour-iframe {
+    width: 100%;
+    height: 550px;
+    border: none;
+    display: block;
+  }
+
+  .tour-controls {
+    background: linear-gradient(135deg, #1A1208, #2C1810);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    flex-wrap: wrap;
+  }
+
+  .tour-ctrl-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(201,168,76,0.1);
+    color: var(--gold-light);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: 'Sarabun', sans-serif;
+  }
+
+  .tour-ctrl-btn:hover {
+    background: rgba(201,168,76,0.2);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* ===== HISTORY SECTION ===== */
+  #history {
+    background: linear-gradient(180deg, #0F0A04 0%, #150E06 100%);
+  }
+
+  .history-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .history-layout { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    iframe.tour-iframe { height: 300px; }
+  }
+
+  .history-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(44,24,16,0.6));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .history-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--gold-light), var(--gold-deep));
+  }
+
+  .history-card h3 {
+    font-family: 'Noto Serif Thai', serif;
+    color: var(--gold-light);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .history-card p {
+    color: rgba(253,243,208,0.8);
+    line-height: 1.9;
+    font-size: 0.95rem;
+  }
+
+  .year-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+    color: var(--warm-black);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    margin-bottom: 0.7rem;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.8rem;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .timeline-item:last-child { border-bottom: none; margin-bottom: 0; }
+
+  .timeline-dot {
+    position: absolute;
+    left: -1.75rem;
+    top: 0.3rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--warm-black);
+    box-shadow: 0 0 8px rgba(201,168,76,0.5);
+  }
+
+  .timeline-year {
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-text {
+    font-size: 0.9rem;
+    color: rgba(253,243,208,0.75);
+    line-height: 1.7;
+  }
+
+  /* ===== HIGHLIGHTS SECTION ===== */
+  #highlights {
+    background: linear-gradient(180deg, #150E06 0%, var(--warm-black) 100%);
+  }
+
+  .highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .highlight-card {
+    background: linear-gradient(135deg, rgba(44,24,16,0.8), rgba(26,18,8,0.9));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .highlight-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .highlight-card:hover::after { transform: scaleX(1); }
+
+  .highlight-card:hover {
+    border-color: rgba(201,168,76,0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(201,168,76,0.1);
+  }
+
+  .highlight-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(201,168,76,0.4));
+  }
+
+  .highlight-card h3 {
+    font-family: 'Noto Serif Thai', serif;
+    color: var(--gold-light);
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .highlight-card p {
+    color: rgba(253,243,208,0.7);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  /* ===== SERVICES SECTION ===== */
+  #services {
+    background: linear-gradient(180deg, var(--warm-black) 0%, #0F0A04 100%);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .service-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: rgba(201,168,76,0.04);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    padding: 1.3rem;
+    transition: all 0.3s;
+  }
+
+  .service-item:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: rgba(201,168,76,0.3);
+  }
+
+  .service-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .service-info h4 {
+    font-family: 'Noto Serif Thai', serif;
+    color: var(--gold-light);
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .service-info p {
+    color: rgba(253,243,208,0.6);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  /* ===== INFO SECTION ===== */
+  #info {
+    background: linear-gradient(180deg, #0F0A04 0%, var(--warm-black) 100%);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .info-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), transparent);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .info-icon {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-value {
+    font-family: 'Noto Serif Thai', serif;
+    color: var(--cream);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* ===== MAP SECTION ===== */
+  .map-container {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(201,168,76,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .map-container iframe {
+    width: 100%;
+    height: 350px;
+    border: none;
+    display: block;
+    filter: sepia(30%) saturate(70%);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #0A0701;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-lotus {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px rgba(201,168,76,0.3));
+  }
+
+  .footer-title {
+    font-family: 'Noto Serif Thai', serif;
+    color: var(--gold-light);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-sub {
+    color: rgba(253,243,208,0.4);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+
+  .footer-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.5rem auto;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== GOLD PARTICLES ===== */
+  .particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: float-particle linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes float-particle {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-20px) scale(1); opacity: 0; }
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    .highlights-grid { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    section { padding: 3rem 1rem; }
+    .tour-frame-header { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">🪷 <span>วัดมหาพุทธาราม</span></a>
+  <ul class="nav-links">
+    <li><a href="#virtual-tour">ชมวัด 360°</a></li>
+    <li><a href="#history">ประวัติ</a></li>
+    <li><a href="#highlights">จุดน่าสนใจ</a></li>
+    <li><a href="#services">บริการ</a></li>
+    <li><a href="#info">ข้อมูล</a></li>
+  </ul>
+</nav>
+
+<!-- HERO SECTION -->
+<header>
+  <div class="hero-ornament-top"></div>
+  <div class="hero-bg-pattern"></div>
+
+  <!-- Gold particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="badge-virtual">🔮 VIRTUAL REALITY 360°</div>
+    <p class="hero-title-sub">การพัฒนาสื่อเสมือนจริง 360 องศา</p>
+    <h1 class="hero-title">วัดมหาพุทธาราม</h1>
+    <p class="hero-subtitle">วัดพระโต • พระอารามหลวง จังหวัดศรีสะเกษ</p>
+
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <div class="hero-divider-lotus">☸</div>
+      <div class="hero-divider-line rev"></div>
+    </div>
+
+    <p class="hero-desc">
+      ยินดีต้อนรับสู่ประสบการณ์ท่องเที่ยวเสมือนจริง 360 องศา<br>
+      สัมผัสความศักดิ์สิทธิ์และความงามของวัดเก่าแก่คู่บ้านคู่เมืองศรีสะเกษ<br>
+      ที่มีอายุกว่า 200 ปี ในรูปแบบดิจิทัลที่ทันสมัย
+    </p>
+
+    <div>
+      <a href="#virtual-tour" class="btn-360">
+        <span>🎯</span> เริ่มชมวัด 360°
+      </a>
+      <a href="#history" class="btn-360 btn-outline">
+        <span>📖</span> ประวัติวัด
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>เลื่อนลง</span>
+    <span>▼</span>
+  </div>
+
+  <div class="flame-container"></div>
+</header>
+
+<!-- VIRTUAL TOUR SECTION -->
+<section id="virtual-tour">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">🌐 เทคโนโลยี VR 360°</span>
+      <h2 class="section-title">ชมวัดเสมือนจริง 360 องศา</h2>
+      <div class="section-underline"></div>
+      <p style="color:rgba(253,243,208,0.7); font-size:0.95rem; max-width:600px; margin:0 auto;">
+        สัมผัสบรรยากาศภายในวัดมหาพุทธาราม (วัดพระโต) ด้วยเทคโนโลยี Virtual Tour<br>
+        ท่านสามารถหมุน ซูม และสำรวจทุกมุมของวัดได้อย่างอิสระ
+      </p>
+    </div>
+
+    <div class="tour-frame-wrapper fade-in">
+      <div class="tour-frame-header">
+        <div class="tour-dots">
+          <div class="tour-dot dot-red"></div>
+          <div class="tour-dot dot-yellow"></div>
+          <div class="tour-dot dot-green"></div>
+        </div>
+        <div class="tour-frame-title">🏛️ วัดมหาพุทธาราม (วัดพระโต) — Virtual Tour 360°</div>
+        <div class="tour-badge-360">360° VR</div>
+      </div>
+
+      <iframe
+        class="tour-iframe"
+        src="https://my.matterport.com/show/?m=dP6UBn6DKiB"
+        allowfullscreen
+        allow="xr-spatial-tracking"
+        title="Virtual Tour วัดมหาพุทธาราม 360 องศา"
+      ></iframe>
+
+      <div class="tour-controls">
+        <span style="color:rgba(253,243,208,0.5); font-size:0.8rem;">วิธีใช้:</span>
+        <span class="tour-ctrl-btn">🖱️ ลากเพื่อหมุน</span>
+        <span class="tour-ctrl-btn">🔍 เลื่อนล้อเมาส์ซูม</span>
+        <span class="tour-ctrl-btn">🔵 คลิกจุดเพื่อเดิน</span>
+        <a href="https://my.matterport.com/show/?m=dP6UBn6DKiB" target="_blank" class="tour-ctrl-btn">
+          ⛶ เต็มหน้าจอ
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY SECTION -->
+<section id="history">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">📜 ประวัติศาสตร์</span>
+      <h2 class="section-title">ประวัติวัดมหาพุทธาราม</h2>
+      <div class="section-underline"></div>
+    </div>
+
+    <div class="history-layout">
+      <div class="fade-in">
+        <div class="history-card" style="margin-bottom:1.5rem;">
+          <div class="year-badge">พ.ศ. 2328</div>
+          <h3>🌳 จุดกำเนิดวัดพระโต</h3>
+          <p>
+            ในปี พ.ศ. 2328 พระวิเศษภักดี (ท้าวชม) เจ้าเมืองศรีสะเกษคนที่ 2 ได้ย้ายเมืองมาตั้งที่ใหม่ ระหว่างนั้นมีผู้ค้นพบ <strong style="color:var(--gold-light)">"หลวงพ่อโต"</strong> ประดิษฐานอยู่ใจกลางป่าแดงโดยบังเอิญ จึงได้สร้างวัดขึ้นบริเวณที่พบพระพุทธรูป ตั้งชื่อว่า <strong style="color:var(--gold-light)">"วัดพระโต"</strong> หรือ "วัดป่าแดง" และได้รับการทำนุบำรุงจากเจ้าเมืองสืบต่อมาตลอด
+          </p>
+        </div>
+
+        <div class="history-card">
+          <h3>🏛️ สถานะวัดในปัจจุบัน</h3>
+          <p>
+            วัดมหาพุทธารามเป็น <strong style="color:var(--gold-light)">พระอารามหลวงชั้นตรี ชนิดสามัญ</strong> สังกัดคณะสงฆ์ฝ่ายมหานิกาย ตั้งอยู่บนถนนขุขันธ์ ตำบลเมืองเหนือ อำเภอเมืองศรีสะเกษ ปัจจุบันเป็น <strong style="color:var(--gold-light)">สำนักปฏิบัติธรรมประจำจังหวัด</strong> และเป็นศูนย์รวมจิตใจของชาวพุทธทั่วจังหวัด
+          </p>
+        </div>
+      </div>
+
+      <div class="fade-in">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">พ.ศ. 2328</div>
+            <div class="timeline-text">ค้นพบหลวงพ่อโต และสร้างวัดพระโต (วัดป่าแดง) ขึ้นเป็นวัดคู่บ้านคู่เมืองศรีสะเกษ</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">พ.ศ. 2465</div>
+            <div class="timeline-text">วัดได้รับพระราชทานวิสุงคามสีมา รับรองสถานะอย่างเป็นทางการ</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">พ.ศ. 2491</div>
+            <div class="timeline-text">คณะสงฆ์ศรีสะเกษนำโดยพระชินวงศาจารย์ดำริเปลี่ยนชื่อวัดอย่างเป็นทางการ</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">พ.ศ. 2494</div>
+            <div class="timeline-text">เปลี่ยนชื่อเป็น <strong style="color:var(--gold-light)">"วัดมหาพุทธาราม"</strong> อย่างเป็นทางการ</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">ปัจจุบัน</div>
+            <div class="timeline-text">พระอารามหลวงชั้นตรี สำนักปฏิบัติธรรม และแหล่งท่องเที่ยวสำคัญของจังหวัดศรีสะเกษ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS SECTION -->
+<section id="highlights">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">✨ สิ่งน่าสนใจ</span>
+      <h2 class="section-title">จุดน่าสนใจภายในวัด</h2>
+      <div class="section-underline"></div>
+    </div>
+
+    <div class="highlights-grid">
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🙏</span>
+        <h3>หลวงพ่อโต (พระพุทธมหามุนี)</h3>
+        <p>พระพุทธรูปศักดิ์สิทธิ์คู่บ้านคู่เมือง เป็นพระพุทธรูปศิลาจำหลักสันนิษฐานว่าเป็นสมัยขอม มีอายุร่วมพันปี สูง 6.85 เมตร เป็นที่เคารพสักการะของชาวศรีสะเกษ</p>
+      </div>
+
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🛕</span>
+        <h3>พระอุโบสถ</h3>
+        <p>สถาปัตยกรรมทรงไทยที่งดงาม ตกแต่งด้วยศิลปะลวดลายไทยประณีต ภายในประดิษฐานพระประธานที่งามสง่า เป็นสถานที่ประกอบพิธีกรรมทางศาสนาที่สำคัญ</p>
+      </div>
+
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🔔</span>
+        <h3>หอระฆัง</h3>
+        <p>หอระฆังทรงสูงที่มีเสียงกังวานไพเราะ เป็นสัญลักษณ์แห่งการนิมนต์พระสงฆ์ และยังเป็นจุดถ่ายรูปยอดนิยมของผู้มาเยือน</p>
+      </div>
+
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🌸</span>
+        <h3>สวนหย่อมและบึงโบกขรณี</h3>
+        <p>บริเวณโดยรอบวัดร่มรื่นด้วยต้นไม้ใหญ่ มีบึงน้ำที่สวยงาม เหมาะสำหรับการนั่งพักผ่อนหย่อนใจและนั่งสมาธิ</p>
+      </div>
+
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🎓</span>
+        <h3>โรงเรียนพระปริยัติธรรม</h3>
+        <p>สถาบันการศึกษาพระพุทธศาสนาภายในวัด ทำหน้าที่สืบสานและเผยแผ่พระพุทธศาสนา รวมทั้งโรงเรียนวัดมหาพุทธารามสำหรับเยาวชน</p>
+      </div>
+
+      <div class="highlight-card fade-in">
+        <span class="highlight-icon">🧘</span>
+        <h3>สำนักปฏิบัติธรรม</h3>
+        <p>วัดมหาพุทธารามเป็นสำนักปฏิบัติธรรมประจำจังหวัดศรีสะเกษ เปิดรับผู้สนใจฝึกสมาธิวิปัสสนากรรมฐานตลอดปี</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">🏮 บริการ</span>
+      <h2 class="section-title">จุดบริการสำหรับนักท่องเที่ยว</h2>
+      <div class="section-underline"></div>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-item fade-in">
+        <span class="service-icon">🅿️</span>
+        <div class="service-info">
+          <h4>ลานจอดรถ</h4>
+          <p>มีพื้นที่จอดรถเพียงพอ ทั้งรถยนต์ส่วนตัวและรถโดยสาร ไม่มีค่าบริการ</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">🚻</span>
+        <div class="service-info">
+          <h4>ห้องน้ำสาธารณะ</h4>
+          <p>มีห้องน้ำสะอาด แยกชาย-หญิง กระจายทั่วบริเวณวัด</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">🛍️</span>
+        <div class="service-info">
+          <h4>ร้านค้าของที่ระลึก</h4>
+          <p>จำหน่ายของที่ระลึก พระเครื่อง สินค้าชุมชน และของฝากพื้นเมืองศรีสะเกษ</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">🕯️</span>
+        <div class="service-info">
+          <h4>จุดจำหน่ายเครื่องสักการะ</h4>
+          <p>ดอกไม้ ธูป เทียน และชุดสักการะหลวงพ่อโตพร้อมจำหน่ายภายในวัด</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">📍</span>
+        <div class="service-info">
+          <h4>ศูนย์ข้อมูลนักท่องเที่ยว</h4>
+          <p>มีเจ้าหน้าที่คอยให้ข้อมูลและนำชมวัด มีแผนที่วัดและเอกสารประวัติศาสตร์</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">☕</span>
+        <div class="service-info">
+          <h4>ศาลาพักร้อน / ร้านอาหาร</h4>
+          <p>ศาลาที่พักรับรองผู้มาเยือน มีร้านน้ำและอาหารว่างให้บริการบริเวณรอบวัด</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">📷</span>
+        <div class="service-info">
+          <h4>จุดถ่ายภาพเช็กอิน</h4>
+          <p>มีจุดถ่ายภาพหลายจุดทั่ววัด พร้อมป้ายบอกประวัติและความสำคัญของสถานที่</p>
+        </div>
+      </div>
+
+      <div class="service-item fade-in">
+        <span class="service-icon">♿</span>
+        <div class="service-info">
+          <h4>สิ่งอำนวยความสะดวกผู้พิการ</h4>
+          <p>มีทางลาดและสิ่งอำนวยความสะดวกสำหรับผู้พิการและผู้สูงอายุ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO SECTION -->
+<section id="info">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-label">ℹ️ ข้อมูลเบื้องต้น</span>
+      <h2 class="section-title">ข้อมูลการเข้าชมวัด</h2>
+      <div class="section-underline"></div>
+    </div>
+
+    <div class="info-grid fade-in">
+      <div class="info-card">
+        <span class="info-icon">🕐</span>
+        <div class="info-label">เวลาเปิด-ปิด</div>
+        <div class="info-value">06:00 – 18:00 น.</div>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">🎟️</span>
+        <div class="info-label">ค่าเข้าชม</div>
+        <div class="info-value">ไม่มีค่าใช้จ่าย</div>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">📍</span>
+        <div class="info-label">ที่ตั้ง</div>
+        <div class="info-value">ถ.ขุขันธ์ ต.เมืองเหนือ อ.เมืองศรีสะเกษ</div>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">📞</span>
+        <div class="info-label">สถานะ</div>
+        <div class="info-value">พระอารามหลวงชั้นตรี</div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="fade-in">
+      <div class="history-card">
+        <h3>⚠️ ข้อควรปฏิบัติสำหรับผู้มาเยือน</h3>
+        <p style="margin-top:1rem;">
+          🔸 แต่งกายสุภาพ ไม่สวมเสื้อแขนกุด กางเกงขาสั้น หรือกระโปรงสั้น<br>
+          🔸 ถอดรองเท้าก่อนเข้าพระอุโบสถ<br>
+          🔸 ไม่ส่งเสียงดัง รักษาความสงบและสำรวมกาย วาจา ใจ<br>
+          🔸 ไม่นำอาหาร เครื่องดื่ม เข้าไปในอุโบสถ<br>
+          🔸 ขอความร่วมมือไม่ถ่ายภาพในระหว่างพิธีกรรมทางศาสนา
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="fade-in">
+      <h3 style="font-family:'Noto Serif Thai',serif; color:var(--gold-light); margin-bottom:1rem; text-align:center;">📍 แผนที่วัดมหาพุทธาราม</h3>
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3836.5!2d104.3296!3d15.1185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311bce7ae1c00001%3A0x7c1c2b3e5a3f4b5c!2z4Lin4Liy4LiZ4LiyBOaXpeacrOmdruW6jeaWueW6jw!5e0!3m2!1sth!2sth!4v1700000000000"
+          allowfullscreen=""
+          loading="lazy"
+          title="แผนที่วัดมหาพุทธาราม ศรีสะเกษ">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-lotus">🪷</div>
+  <div class="footer-title">วัดมหาพุทธาราม (วัดพระโต)</div>
+  <div class="footer-sub">พระอารามหลวง จังหวัดศรีสะเกษ • ก่อตั้ง พ.ศ. 2328</div>
+  <div class="footer-line"></div>
+  <p style="color:rgba(253,243,208,0.35); font-size:0.78rem; letter-spacing:1px;">
+    การพัฒนาสื่อเสมือนจริง 360 องศา | Virtual Reality Tourism<br>
+    เพื่อส่งเสริมการท่องเที่ยวเชิงวัฒนธรรมและพระพุทธศาสนา
+  </p>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // Gold particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.width = (Math.random() * 4 + 2) + 'px';
+    p.style.height = p.style.width;
+    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.opacity = Math.random() * 0.6;
+    container.appendChild(p);
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 80) {
+      nav.style.background = 'rgba(26,18,8,0.98)';
+      nav.style.boxShadow = '0 2px 20px rgba(0,0,0,0.5)';
+    } else {
+      nav.style.background = 'linear-gradient(180deg, rgba(26,18,8,0.95) 0%, transparent 100%)';
+      nav.style.boxShadow = 'none';
+    }
+  });
+</script>
+</body>
+</html>
